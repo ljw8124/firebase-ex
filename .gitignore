@@ -66,4 +66,4 @@ node_modules/
 .env
 
 #txt file
-.txt
+*.txt
