@@ -37,13 +37,7 @@ app.get('/', (req, res) => {
             <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-firestore.js"></script>
             <script>
                 const firebaseConfig = {
-                    apiKey: "AIzaSyDlLaQMfDN0SmYSPSIP4L2T1ShXOLgWDWI",
-                    authDomain: "example-98a50.firebaseapp.com",
-                    projectId: "example-98a50",
-                    storageBucket: "example-98a50.appspot.com",
-                    messagingSenderId: "849572838031",
-                    appId: "1:849572838031:web:94084d04cb48aa3ce24efa",
-                    measurementId: "G-B59XTY1QN9"
+                    // 개인키 삽입 필요
                 };
                 firebase.initializeApp(firebaseConfig);
         
