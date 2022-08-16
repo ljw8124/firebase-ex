@@ -121,6 +121,52 @@ MainView.prototype.onSendBtnClick = function(comp, info, e)
 	
 	console.error("SEND " + collectionName + " / " + docName + " / " + sendMsg);
 	
-	this.firestore.collection(collectionName).doc(docName).set(sendMsg);
+	//set은 덮어쓰기의 개념
+	//merge 옵션을 주면 병합을 함
+ 	this.firestore.collection(collectionName).doc(docName).set(
+		sendMsg
+		/*, {merge: true}*/);
+
+
+};
+
+MainView.prototype.onGetBtnClick = function(comp, info, e)
+{
+	//firestore에서 모든 doc에 대한 data 가져오기
+	var ref = this.firestore.collection(this.collectionTxf.getText()).get()
+		.then((docArr) => {
+			docArr.forEach((doc) => {
+				var docId = doc.id;
+				console.log(docId, " -> ", doc.data());
+			});
+		});
+	
+	
+
+};
+
+MainView.prototype.onGetInfoBtnClick = function(comp, info, e)
+{
+	var auth = this.auth;
+	/*var listAllUsers = (nextPageToken) => {
+		this.auth
+			.listUsers(1000, nextPageToken)
+			.then((listUsersResult) => {
+				listUsersResult.users.forEach((userRecord) => {
+					console.log('user ', userRecord);
+				});
+			});
+	};*/
+
+	var user = this.auth.currentUser;	//최근로그인 또는 접근한 사용자
+	/*var msg = {
+		'name': user.displayName,
+		'email': user.email,
+		'photoURL': user.photoURL,
+		'emailVerified': user.emailVerified,
+		'uid': user.uid
+	};*/
+	console.log(auth.listUsers);
+	
 
 };
