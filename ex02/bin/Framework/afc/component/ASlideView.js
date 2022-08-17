@@ -312,6 +312,13 @@ ASlideView.prototype.indexOfItem = function(item)
 	return this.getItems().index(item);
 };
 
+ASlideView.prototype.getCurrentView = function()
+{
+	var item = this.getItem(this.inx);
+	if(item) return item.view;
+	else return null;
+};
+
 ASlideView.prototype.slideTo = function(index, isReport)
 {
 	var aniObj = {}, val;
@@ -451,7 +458,7 @@ ASlideView.prototype.scrollYImplement = function()
 
 		thisObj.scrlManager.scrollCheck(e.changedTouches[0].clientY, function(move)
 		{
-			var dis = Math.abs(this.totDis) - thisObj.option.moveDelay;
+			var dis = Math.abs(this.totDis) - this.option.moveDelay;
 			var ratio = dis/thisObj.getMoveUnit();
 			
 			//부모의 30% 보다 작으면 제자리로

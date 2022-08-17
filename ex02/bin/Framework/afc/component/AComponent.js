@@ -266,6 +266,7 @@ AComponent.prototype.init = function(context, evtListener)
 	//런타임 시점(프로그램 실행 시점)
 	if(!this.isDev())
 	{
+		this.eventStop = !this.getAttr('data-event-propagation');
 		this.loadQueryInfo( (rootView && rootView.isAsyncQryLoad) );
 		
 		// 런타임시에만 disabled -> enable 변경 처리
@@ -603,12 +604,16 @@ AComponent.prototype.getParent = function()
 
 AComponent.prototype.getPrevComp = function()
 {
-	return this.$ele.prev().get(0).acomp;
+	var ele = this.$ele.prev().get(0);
+	if(ele) return ele.acomp;
+	return null;
 };
 
 AComponent.prototype.getNextComp = function()
 {
-	return this.$ele.next().get(0).acomp;
+	var ele = this.$ele.next().get(0);
+	if(ele) return ele.acomp;
+	return null;
 };
 
 //편집기에서 셋팅한 id
@@ -899,6 +904,8 @@ AComponent.prototype.reportEvent = function(evtName, info, event)
 {
 	//if(window.afc_ && !this._unitTest) return;
 	
+	if(!this.isValid()) return;
+	
 	var evts = this.events[evtName];
 	
 	if(evts)
@@ -921,8 +928,8 @@ AComponent.prototype.reportEventDelay = function(evtName, info, delay, event)
 	
 	setTimeout(function()
 	{
-		if(thisObj.isValid())
-			thisObj.reportEvent(evtName, info, event);
+		//if(thisObj.isValid())
+		thisObj.reportEvent(evtName, info, event);
 		
 	}, delay);
 };
@@ -1270,7 +1277,13 @@ AComponent.prototype.loadQueryInfo = function(isAsyncQryLoad)
 	
 	for(var i=0; i<queryNames.length; i++)
 	{
-		if(afc.isAsyncQryLoad || isAsyncQryLoad) AQuery.getQueryAsync(queryNames[i], this._qryLoadDone);
+		if(afc.isAsyncQryLoad || isAsyncQryLoad) 
+		{
+			AQuery.getQueryAsync(queryNames[i], (aquery) => 
+			{
+				this._qryLoadDone(aquery);
+			});
+		}
 		else
 		{
 			this._qryLoadDone(AQuery.getSafeQuery(queryNames[i]));
@@ -1444,8 +1457,10 @@ AComponent.prototype.updateComponent = function(queryData)
 		{
 			// InBlock 정보는 데이터 수신 후 컴포넌트에 세팅되지않는다.
 			if(blockName.indexOf('InB')>-1) continue;
-		
 			var blockData = queryData.getBlockData(blockName);
+			
+			//현재 처리중인 블록명을 지정한다. updateChildMappingComp 를 호출되는 경우에 사용된다.
+			queryData.curBlockName = blockName;
 			ADataMask.setQueryData(blockData[0], keyMap[blockName], queryData);
 			this.setQueryData(blockData, keyMap[blockName], queryData);
 		}
@@ -1453,22 +1468,28 @@ AComponent.prototype.updateComponent = function(queryData)
 	else this.setQueryData(null, null, queryData);
 
 	ADataMask.clearQueryData();
+	
+	//현재 처리중인 블록명을 제거한다.
+	delete queryData.curBlockName;
 };
-
 
 AComponent.prototype.updateChildMappingComp = function(dataArr, queryData)
 {
-	var keyMap = null;
+	var keyMap, blockName = queryData.curBlockName;
 	
 	//listview 에서 subview 를 호출하는 경우, dataKeyMap 자체가 없을 수도 있다.
 	if(this.dataKeyMap) keyMap = this.dataKeyMap[queryData.getQueryName()];
 		
 	if(keyMap)
 	{
-		for(var blockName in keyMap)
+		//처리중인 블록명이 있으면 블록명에 해당하는 매핑정보만 처리한다.
+// 		if(blockName) this.setQueryData(dataArr, keyMap[blockName], queryData);
+// 		else
 		{
-			ADataMask.setQueryData(dataArr[0], keyMap[blockName], queryData);
-			this.setQueryData(dataArr, keyMap[blockName], queryData);
+			for(blockName in keyMap)
+			{
+				this.setQueryData(dataArr, keyMap[blockName], queryData);
+			}
 		}
 	}
 	else this.setQueryData(dataArr, null, queryData);
@@ -1817,6 +1838,11 @@ AComponent.prototype.setOption = function(option, noOverwrite)
 			this.option[p] = option[p];
 		}
     }
+};
+
+AComponent.prototype.setUpdateType = function(updateType)
+{
+	this.updateType = updateType;
 };
 
 //-----------------------------------------------------------------

@@ -148,13 +148,13 @@ AGridEvent.prototype._select = function()
 		}
 		
 		var ePath = e.path || (e.composedPath && e.composedPath());
-
+		
 		//터치한 element 중에서 셀 영역을 찾는다.
-		for(var item of ePath)
+		for(var inx in ePath)
 		{
-			if(item.tagName=='TD')
+			if(ePath[inx].tagName=='TD')
 			{
-				selItem = item;
+				selItem = ePath[inx];
 				break;
 			}
 		}
@@ -255,11 +255,11 @@ AGridEvent.prototype._longtab = function()
 		var ePath = e.path || (e.composedPath && e.composedPath());
 		
 		//터치한 element 중에서 셀 영역을 찾는다.
-		for(var item of ePath)
+		for(var inx in ePath)
 		{
-			if(item.tagName=='TD')
+			if(ePath[inx].tagName=='TD')
 			{
-				selItem = item;
+				selItem = ePath[inx];
 				break;
 			}
 		}
@@ -364,11 +364,11 @@ AGridEvent.prototype._dblclick = function()
 		var ePath = e.path || (e.composedPath && e.composedPath());
 		
 		//터치한 element 중에서 셀 영역을 찾는다.
-		for(var item of ePath)
+		for(var inx in ePath)
 		{
-			if(item.tagName=='TD')
+			if(ePath[inx].tagName=='TD')
 			{
-				selItem = item;
+				selItem = ePath[inx];
 				break;
 			}
 		}

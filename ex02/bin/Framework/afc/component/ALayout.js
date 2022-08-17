@@ -101,6 +101,10 @@ ALayout.prototype.setQueryData = function(dataArr, keyArr, queryData)
 	{
 		child = children[i];
 		
+		//하위 컴포넌트가 그리드인 경우 데이터가 변경되므로 매번 처음 인덱스값으로 변경
+		//dataArr 가 없는 경우도 있으므로 예외처리한다.
+		if(dataArr) ADataMask.setQueryData(dataArr[0], keyArr, queryData);
+		
 		if(child.mappingType==3) child.updateChildMappingComp(dataArr, queryData);
 		else 
 		{

@@ -589,6 +589,12 @@ APivotGrid.prototype.scrollToCenter = function()
 
 //------------------------------------------------
 
+APivotGrid.prototype.setUpdateType = function(updateType)
+{
+	this.pivotGrid.setUpdateType(updateType);
+	this.scrollGrid.setUpdateType(updateType);
+};
+
 APivotGrid.prototype.setQueryData = function(dataArr, keyArr, queryData)
 {
 	this.pivotGrid.updateChildMappingComp(dataArr, queryData);

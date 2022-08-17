@@ -24,7 +24,7 @@ ATextField.CONTEXT =
         width:'100px', height:'22px'  
     },
 
-    events: ['change', 'focus', 'blur']
+    events: ['change', 'focus', 'blur', 'paste']
 	
 	// focusin, focusout : input 요소에 focusin 되면 부모 div에도 그 이벤트가 전달된다.
 	// focus, blur : 부모 div 에 그 이벤트를 전달하지 않는다.
@@ -136,7 +136,7 @@ ATextField.prototype.getAttrValue = function()
 
 ATextField.prototype.getText = function()
 {
-	if(!this.isValid()) return;
+	if(!this.isValid()) return '';
 	
 	if(this.element.dm) return this.element.dm.unmask();
 	
@@ -218,8 +218,10 @@ ATextField.prototype.enable = function(isEnable)
 	if(isEnable)
 	{
 		var thisObj = this;
-		this.defaultTxfState();
-		setTimeout(function() { AComponent.prototype.enable.call(thisObj, isEnable); }, afc.DISABLE_TIME-100);
+		setTimeout(function() {
+			AComponent.prototype.enable.call(thisObj, isEnable);
+			thisObj.defaultTxfState();
+		}, afc.DISABLE_TIME-100);
 	}
 	else
 	{

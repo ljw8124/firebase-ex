@@ -19,7 +19,7 @@ function pretice_firebaseApp*onReady()
 	
 	// personal Key (firebase)
 	const firebaseConfig = {
-		//개인키 삽입 필요
+		//개인키삽입필요
 	};
 
   	// Initialize Firebase
@@ -27,8 +27,6 @@ function pretice_firebaseApp*onReady()
 
 	this.setMainContainer(new APage('main'));
 	this.mainContainer.open('Source/MainView.lay');
-
-	//TODO:edit here
 
 };
 

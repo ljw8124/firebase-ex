@@ -12,6 +12,7 @@ function AEvent(acomp)
 	this.acomp = acomp;
 	//this.isTouchLeave = true;
 }
+
 //--------------------------------------------------------------
 // static area
 

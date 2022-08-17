@@ -28,6 +28,7 @@ function AContainer(containerId)	//필요시만 셋팅
 	this.$ele = null;
 	
 	this.parent = null;			//parent AContainer
+	this.url = null;
 	
 	this.className = afc.getClassName(this);
 	
@@ -222,6 +223,7 @@ AContainer.prototype.open = function(url, parent, left, top, width, height)
 	}
 	
 	this.parent = parent;
+	this.url = url;
     
 	//init 이 호출되지 않은 경우 
 	if(!this.element) this.init();
@@ -242,9 +244,21 @@ AContainer.prototype.open = function(url, parent, left, top, width, height)
 	
     //현재 활성화된 브라우저의 body 에 Element 를 추가하기 위해
     var fApp = AApplication.getFocusedApp();
-    
-	if(this.option.inParent) this.parent.$ele.append(this.$ele);
-	else fApp.rootContainer.$ele.append(this.$ele);
+	
+	//if(this.option.inParent) this.parent.$ele.append(this.$ele);
+	//else fApp.rootContainer.$ele.append(this.$ele);
+	
+	if(this.option.inParent) 
+	{
+		//루트컨테이너를 생성할 때는 viewItem 을 만들지 않기 때문에 비교
+		if(this.parent.viewItem) this.parent.viewItem.appendChild(this.element);
+		else this.parent.element.appendChild(this.element);
+	}
+	else 
+	{
+		if(fApp.rootContainer.viewItem) fApp.rootContainer.viewItem.appendChild(this.element);
+		else fApp.rootContainer.element.appendChild(this.element);
+	}
 	
 	var thisObj = this;
 	

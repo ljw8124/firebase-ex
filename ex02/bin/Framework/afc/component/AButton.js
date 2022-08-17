@@ -313,6 +313,9 @@ AButton.prototype._getLastBgColor = function($ele)
 {
 	var color = $ele.css('background-color');
 	
+	//html 태그까지 올라가면 중단한다.
+	if($ele[0].tagName=='HTML') color = 'rgb(255,255,255)';
+	
 	if(color=='transparent') 
 		return this._getLastBgColor($ele.parent());
 	

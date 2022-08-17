@@ -54,7 +54,10 @@ if(afc.isPC)
 	ATextFieldEvent.prototype.keyup = null;
 }
 
-
+ATextFieldEvent.prototype.paste = function()
+{
+	this._paste();
+};
 
 
 
@@ -220,5 +223,15 @@ ATextFieldEvent.prototype._keyup = function()
 		if(!acomp.keyPropagation) e.stopPropagation();
 		
 		acomp.reportEvent('keyup', null, e);
+	});
+};
+
+ATextFieldEvent.prototype._paste = function()
+{
+	var acomp = this.acomp;
+	
+	AEvent.bindEvent(acomp.element, 'paste', function(e) 
+	{
+		acomp.reportEvent('paste', null, e);
 	});
 };

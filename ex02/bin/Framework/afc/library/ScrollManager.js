@@ -27,18 +27,10 @@ function ScrollManager()
 	this.moveStart = false;
 	this.stopCallback = null;
 	
-	//this option is not used with animationFrame 
-	//except moveDelay
 	this.option = 
 	{
-		startDelay: 10,
-		endDelay: 20,
-		scrollAmount: 50,
-		velocityRatio: 0.02,
 		moveDelay: 40
 	};
-	
-	this.endVelocity = 0;
 	
 	window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 	window.cancelAnimationFrame  = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
@@ -246,47 +238,11 @@ ScrollManager.prototype.scrollCheck = function(pos, scrollFunc)
 	if(window.requestAnimationFrame)
 	{
 		velocity = chkDis/elapse;
-		this.autoScroll2(velocity, scrollFunc);
-	}
-	else
-	{
-		velocity = (chkDis*Math.abs(chkDis))/(elapse*elapse);
-		this.endVelocity = this.option.endDelay + Math.abs(velocity*10);
-		this.autoScroll(this.option.startDelay, velocity*this.option.scrollAmount, scrollFunc);
+		this.autoScroll(velocity, scrollFunc);
 	}
 };
 
-ScrollManager.prototype.autoScroll = function(velocity, move, scrollFunc)
-{
-	if(velocity>this.endVelocity) 
-	{
-		this.stopScrollTimer();
-		return;
-	}
-
-    var thisObj = this;
-    this.scrlTimer = setTimeout(function()
-    {
-    	if(thisObj.isScrollStop) return;
-		
-   		if(!scrollFunc.call(thisObj, move)) 
-		{
-			setTimeout(function()
-			{
-				thisObj.stopScrollTimer();
-				//thisObj.initScroll(0);
-			}, 50);
-			
-			return;
-		}
-		
-  		thisObj.autoScroll(velocity + velocity*thisObj.option.velocityRatio, move - move/velocity, scrollFunc);
-        
-    }, velocity);
-	
-};
-
-ScrollManager.prototype.autoScroll2 = function(acceleration, scrollFunc)
+ScrollManager.prototype.autoScroll = function(acceleration, scrollFunc)
 {
 	var thisObj = this, elapsed, move;
 	var oldTime = 0, velocity = acceleration*1500, resistance = -0.1;//, totalElapsed = 0;
@@ -323,7 +279,7 @@ ScrollManager.prototype.autoScroll2 = function(acceleration, scrollFunc)
 
 		//저항값과 이동값의 부호는 반대이다. 
 		//즉, move 값의 부호가 바뀌면 이동을 멈춰야 한다.
-		if(resistance*move>0 || !scrollFunc.call(thisObj, move)) 
+		if(resistance*move>0 || !scrollFunc.call(thisObj, move, velocity)) 
 		{
 			setTimeout(function()
 			{

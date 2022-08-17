@@ -21,7 +21,7 @@ ATextArea.CONTEXT =
         width:'320px', height:'150px'
     },
 
-    events: ['focus', 'change', 'blur']
+    events: ['focus', 'change', 'blur', 'paste']
 	
 	// focusin, focusout : input 요소에 focusin 되면 부모 div에도 그 이벤트가 전달된다.
 	// focus, blur : 부모 div 에 그 이벤트를 전달하지 않는다.

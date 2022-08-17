@@ -20,11 +20,11 @@
   "build": {
     "bridgeName": "none",
     "indexTitle": "",
-    "frwLoadOption": "inTimeLoad",
+    "frwLoadOption": "usedAllLoad",
     "stlImportant": true,
     "subName": "",
     "outputPath": "",
-    "scriptLink": "<script defer src=\"https://www.gstatic.com/firebasejs/7.20.0/firebase.js\"></script>"
+    "scriptLink": "<script src=\"https://www.gstatic.com/firebasejs/9.9.2/firebase-app-compat.js\"></script>\n<script src=\"https://www.gstatic.com/firebasejs/9.9.2/firebase-firestore-compat.js\"></script>\n<script src=\"https://www.gstatic.com/firebasejs/9.9.2/firebase-auth-compat.js\"></script>"
   },
   "script": {
     "before": [],

@@ -569,8 +569,7 @@ AWindow.prototype.modalManage = function(zIndex)
 
 	if(this.option.isModal)
 	{
-		this.modalBg.css(
-		{
+		this.modalBg.css({
 			'top':'0px', 'left':'0px',
 			'width':'100%', 'height':'100%',
 		});
@@ -580,47 +579,47 @@ AWindow.prototype.modalManage = function(zIndex)
 	}
 	else
 	{
-		this.modalBg.css(
-		{
+		this.modalBg.css({
 			'top':this.$ele.css('top'), 'left':this.$ele.css('left'),
 			'width':this.$ele.css('width'), 'height':this.$ele.css('height'),
 		});
-	}	
+	}
 
 	//현재 활성화된 브라우저의 body 에 Element 를 추가하기 위해
-    var fApp = AApplication.getFocusedApp();
+	var fApp = AApplication.getFocusedApp();
 
 	if(this.option.inParent) this.parent.$ele.append(this.modalBg);
-    else fApp.rootContainer.$ele.append(this.modalBg);
-	
-	var thisObj = this;
-	
+	else fApp.rootContainer.$ele.append(this.modalBg);
+
 	//modalBg의 enable 로는 바로 닫히는 경우는 해결가능하지만 기존에 떠있는 윈도우가 있는 경우
-	//enable 되기전에 클릭시 기존 윈도우의 z-index가 높게 설정되어 Top으로 위치하게 되는 버그가 있어 이벤트를 나중에 바인드하게 수정
-	setTimeout(function()
-	{
-		if(!thisObj.modalBg) return;
-		AEvent.bindEvent(thisObj.modalBg[0], AEvent.ACTION_DOWN, function(e)
+	//enable 되기전에 클릭시 기존 윈도우의 z-index가 높게 설정되어 Top으로 위치하게 되는 버그가 있어 이벤트를 나중에 바인드하게 수정(setTimeout)
+	//위의 로직은 윈도우A, B, C 가 있는 경우 A가 B를 띄우면서 B가 Top Window가 되지만 A에서 빠르게 두번 버튼을 클릭하게 되면
+	//A가 Top Window가 되고 C를 띄우게 되면 B와 C의 z-index가 동일해져 C가 안보이게 되는 현상이 있어 이벤트는 바로 바인드하고 시간으로 막는다.
+	var thisObj = this;
+	var appendTime = Date.now();
+	AEvent.bindEvent(thisObj.modalBg[0], AEvent.ACTION_DOWN, function(e) {
+	
+		e.preventDefault();
+		e.stopPropagation();
+
+		//오픈
+		if(appendTime + afc.DISABLE_TIME > Date.now()) return;
+
+		if(thisObj.option.isFocusLostClose) 
 		{
-			e.preventDefault();
-			e.stopPropagation();
+			thisObj.isDisableTime = false;
 
-			if(thisObj.option.isFocusLostClose) 
-			{
-				thisObj.isDisableTime = false;
-
-				//close가 호출되어 modalBg afc.DISABLE_TIME 이후에 제거되는데
-				//그전에 ACTION_DOWN이 호출되면 close가 또 발생되므로 isValid로 체크한다.
-				//unbindEvent 를 하는 방법도 생각해 볼 것.
-				if(thisObj.isValid()) thisObj.close();
-			}
-			else if(thisObj.option.isFocusLostHide) 
-			{
-				thisObj.isDisableTime = false;
-				thisObj.hide();
-			}
-		});
-	}, afc.DISABLE_TIME);
+			//close가 호출되어 modalBg afc.DISABLE_TIME 이후에 제거되는데
+			//그전에 ACTION_DOWN이 호출되면 close가 또 발생되므로 isValid로 체크한다.
+			//unbindEvent 를 하는 방법도 생각해 볼 것.
+			if(thisObj.isValid()) thisObj.close();
+		}
+		else if(thisObj.option.isFocusLostHide) 
+		{
+			thisObj.isDisableTime = false;
+			thisObj.hide();
+		}
+	});
 };
 
 //다이얼로그와 같은 속성으로 윈도우를 오픈한다.

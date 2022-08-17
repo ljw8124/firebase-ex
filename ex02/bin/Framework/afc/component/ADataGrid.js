@@ -169,15 +169,22 @@ ADataGrid.prototype._applyOptionToChild = function()
 ADataGrid.prototype.updatePosition = function(width, height)
 {
 	AView.prototype.updatePosition.call(this, width, height);
+
+    var scrlSize = this.grid.scrollArea.height();
 	
-	this.scrollBarV.setScrollArea(this.grid.scrollArea.height(), this.grid.hRowTmplHeight, this.grid.rowTmplHeight, true);
+    if(scrlSize)
+	    this.scrollBarV.setScrollArea(scrlSize, this.grid.hRowTmplHeight, this.grid.rowTmplHeight, true);
 	
 	var pivotAdd = 0;
 	
 	if(this.pivotGrid) pivotAdd = this.pivotGrid.getWidth();
 	
-	this.scrollBarH.setScrollArea(this.scrlView.$ele.width(), 0, 1);
-	this.scrollBarH.setDataCount(this.grid.$ele.width()+pivotAdd);
+    scrlSize = this.scrlView.$ele.width();
+    if(scrlSize)
+    {
+        this.scrollBarH.setScrollArea(scrlSize, 0, 1);
+        this.scrollBarH.setDataCount(this.grid.$ele.width()+pivotAdd);
+    }
 	
 	if(!this.isDev())
 	{
@@ -417,6 +424,7 @@ ADataGrid.prototype._onScrollX = function(acomp, info, e)
 		
 		//좌우스크롤이 시작되는 시점에 초기화하고 화면 갱신
 		this.resetColPos();
+		this._resetInitRow(true);
 		this.renderData();
 	}
 	
@@ -483,6 +491,9 @@ ADataGrid.prototype._resetInitRow = function(isReset)
 	
 	if(isReset)
 	{
+		this.isScrollingX = false;
+		this.isScrollingY = false;
+	
 		if(this.scrollMoveState)
 		{
 			// touchmove 이벤트 중에... element 가 제거되면 무브 이벤트가 중단되므로 
@@ -769,7 +780,7 @@ ADataGrid.prototype.setGridData = function(dataArr2, updateType, isFiltered)
 	// type이 sum인 경우 위의 항목을 다 더한다.
 	//this.sum();
 	
-	if(updateType != 1) this.updateDataGrid();
+	if(updateType != 1) this.updateDataGrid(true);
 };
 
 //filterData 가 null 이면 필터를 해제한다.

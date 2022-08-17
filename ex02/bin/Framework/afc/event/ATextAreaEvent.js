@@ -56,6 +56,12 @@ if(afc.isPC)
 	ATextAreaEvent.prototype.keyup = null;
 }
 
+ATextAreaEvent.prototype.paste = function()
+{
+	this._paste();
+};
+
+
 
 //---------------------------------------------------------------------------------------------------
 
@@ -186,6 +192,16 @@ ATextAreaEvent.prototype._keyup = function()
 		
 		acomp.reportEvent('keyup', null, e);
 	});
-};	
+};
+
+ATextAreaEvent.prototype._paste = function()
+{
+	var acomp = this.acomp;
+	
+	AEvent.bindEvent(acomp.element, 'paste', function(e) 
+	{
+		acomp.reportEvent('paste', null, e);
+	});
+};
 
 

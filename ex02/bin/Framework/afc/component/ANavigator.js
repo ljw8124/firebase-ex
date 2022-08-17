@@ -119,11 +119,13 @@ ANavigator.prototype.registerPage = function(url, pageId, pageClass, cond, isAsy
 	infoArray.push(newInfo);
 	
 	if(!pageClass) newInfo.pageClass = afc.ClassName.PAGE;
+	
+	return newInfo;
 };
 
 ANavigator.prototype.registerPageEx = function(pageInfo)
 {
-	this.registerPage(pageInfo.url, pageInfo.pageId, pageInfo.pageClass, pageInfo.cond, pageInfo.isAsync);
+	return this.registerPage(pageInfo.url, pageInfo.pageId, pageInfo.pageClass, pageInfo.cond, pageInfo.isAsync);
 };
 
 ANavigator.prototype.unRegisterPage = function(pageId)
@@ -160,7 +162,7 @@ ANavigator.prototype.getPageInfo = function(pageId)
 		//조건을 지정하지 않은 페이지가 기본 페이지이다.
 		if(!obj.cond) def = obj;
 		//조건을 만족하면 바로 리턴
-		else if(obj.cond()) return obj;
+		else if(obj.cond.call(this, obj)) return obj;
 	}
 	
 	return def;
@@ -283,7 +285,7 @@ ANavigator.prototype.goPage = function(pageId, data, isNoHistory)
 		isFirst = true;
 	}
 	
-	//현재 액티브된 페이지를 다시 호출한 경우
+	//현재 액티브된 페이지를 다시 호출한 경우는 제외
 	if(pageInfo.pageObj!==this.activePage)
 	{
 		// 최초 페이지가 아닌 경우에만 active 시점에 데이터를 세팅해준다.
@@ -316,7 +318,8 @@ ANavigator.prototype.goPrevPage = function(data)
 		page.pageData = data;	//deprecated
 		page.setData(data);
 		
-		this.flipPage(page, false);
+		if(page.isValid()) this.flipPage(page, false);
+		else this.pageHistory[this.curHisIndex] = this.goPage(page.getContainerId(), data, true);
 		
 		return true;
 	}
@@ -334,7 +337,8 @@ ANavigator.prototype.goNextPage = function(data)
 		page.pageData = data;	//deprecated
 		page.setData(data);
 		
-		this.flipPage(page, false);
+		if(page.isValid()) this.flipPage(page, false);
+		else this.pageHistory[this.curHisIndex] = this.goPage(page.getContainerId(), data, true);
 		
 		return true;
 	}
