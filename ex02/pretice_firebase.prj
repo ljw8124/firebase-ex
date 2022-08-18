@@ -53,14 +53,7 @@
           {
             "type": 1,
             "name": "img",
-            "children": [
-              {
-                "type": 8,
-                "name": "google.png",
-                "relType": 1,
-                "path": "Assets\\img\\"
-              }
-            ]
+            "children": []
           }
         ]
       },
