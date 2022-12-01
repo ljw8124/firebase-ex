@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import fbase from 'fbInstance';
 import AppRouter from 'components/Router';
 import { authService } from "fbInstance";
 
@@ -22,7 +21,6 @@ function App() {
   return (
       <>
         {init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj}/> : "Initializing..."}
-        <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
       </>
   );
 }
