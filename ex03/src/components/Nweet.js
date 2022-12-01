@@ -6,7 +6,7 @@ import {dbService, storageService} from '../fbInstance';
 const Nweet = ({nweetObj, isOwner}) => {
   const [modifying, setModifying] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
-  const NweetTextRef = doc(dbService, "Nweets", `${nweetObj.id}`)
+  const NweetTextRef = doc(dbService, "Nweets", `${nweetObj.id}`);
 
   const doDeleteClick = async () => {
     const ok = window.confirm("Are you sure you want to delete this nweet?");
@@ -24,12 +24,12 @@ const Nweet = ({nweetObj, isOwner}) => {
       text: newNweet,
     });
     setModifying(false);
-
-  }
+  };
   const onChange = (event) => {
     const {target: {value}} = event;
     setNewNweet(value);
-  }
+  };
+
   return (
     <div>
       {
